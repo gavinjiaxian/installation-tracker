@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation Tracker - WhatsApp Share</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="InstTracker">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="InstTracker">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px 300px;
+            gap: 20px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr 400px;
+            }
+            
+            .deployed-card {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .installations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .installation-item {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .installation-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .action-buttons {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .remove-btn, .move-btn {
+            background: #fc8181;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #f56565;
+            transform: scale(1.1);
+        }
+
+        .move-btn {
+            background: #667eea;
+            font-size: 16px;
+        }
+
+        .move-btn:hover:not(:disabled) {
+            background: #5a67d8;
+            transform: scale(1.1);
+        }
+
+        .move-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .deploy-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .deploy-btn:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        select {
+            padding: 14px 12px;
+            font-size: 15px;
+            min-height: 48px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 16px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .add-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .preview-card {
+            position: sticky;
+            top: 20px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-header h2 {
+            color: #2d3748;
+            font-size: 20px;
+        }
+
+        .preview-box {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #2d3748;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .preview-box:empty::before {
+            content: "Add installations to see preview...";
+            color: #a0aec0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .whatsapp-btn {
+            width: 100%;
+            padding: 16px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .whatsapp-btn:hover:not(:disabled) {
+            background: #1fb855;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .sync-status {
+            background: #e6fffa;
+            border: 2px solid #81e6d9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #234e52;
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            background: #38b2ac;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .deployed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .deployed-item {
+            background: #f0fff4;
+            border: 2px solid #9ae6b4;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .deployed-item:hover {
+            border-color: #48bb78;
+            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.15);
+        }
+
+        .deployed-item-text {
+            flex: 1;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .deployed-card {
+            position: sticky;
+            top: 20px;
+        }
+
+        .clear-all-btn {
+            width: 100%;
+            padding: 12px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            margin-top: 15px;
+        }
+
+        .clear-all-btn:hover {
+            background: #c53030;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
+        }
+
+        .clear-all-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .date-tbc-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .date-tbc-checkbox input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .date-tbc-checkbox label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .time-range-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .time-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-input-group label {
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .date-time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .image-upload-container {
+            margin-top: 10px;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 2px solid #e2e8f0;
+            background: #f7fafc;
+        }
+
+        .image-upload-label {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #667eea;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .image-upload-label:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .image-upload-input {
+            display: none;
+        }
+
+        .remove-image-btn {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 10px 16px;
+            background: #fc8181;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .remove-image-btn:hover {
+            background: #f56565;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Form and Installations -->
+        <div class="card">
+            <h1>🛠️ Installation Tracker</h1>
+            <p class="subtitle">Manage upcoming installations and share via WhatsApp</p>
+
+            <div class="sync-status">
+                <div class="sync-dot"></div>
+                <span>Changes sync automatically across devices</span>
+            </div>
+
+            <div class="installations-list" id="installationsList">
+                <!-- Installation items will be added here -->
+            </div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">📦</div>
+                <p>No installations yet. Click the + button below to add one!</p>
+            </div>
+
+            <button class="add-btn" onclick="addInstallation()">
+                <span style="font-size: 24px;">+</span>
+                Add New Installation
+            </button>
+        </div>
+
+        <!-- Right Panel: Preview and WhatsApp Share -->
+        <div class="card preview-card">
+            <div class="preview-header">
+                <h2>📱 Message Preview</h2>
+            </div>
+            
+            <div class="preview-box" id="previewBox"></div>
+            
+            <button class="whatsapp-btn" id="whatsappBtn" onclick="shareToWhatsApp()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+                Share to WhatsApp
+            </button>
+        </div>
+
+        <!-- Right Panel 2: Deployed Installations -->
+        <div class="card deployed-card">
+            <h2 style="color: #2d3748; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                ✅ Deployed
+            </h2>
+            
+            <div class="deployed-list" id="deployedList">
+                <!-- Deployed items will be added here -->
+            </div>
+
+            <div class="empty-state" id="deployedEmptyState">
+                <div class="empty-state-icon">📍</div>
+                <p>No deployed installations yet</p>
+            </div>
+
+            <button class="clear-all-btn" id="clearAllBtn" onclick="clearAllDeployed()" style="display: none;">
+                🗑️ Clear All Deployed
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase configuration for shared data storage
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase config - YOU NEED TO REPLACE THIS WITH YOUR OWN
+        // For now, using localStorage as fallback
+        const USE_FIREBASE = true; // Set to true when you add Firebase config
+
+        let installations = [];
+        let deployed = [];
+        let db = null;
+
+        // Initialize storage
+        if (USE_FIREBASE) {
+            // Firebase initialization (add your config here)
+            const firebaseConfig = {
+                // Add your Firebase config here
+                apiKey: "AIzaSyB7vFgU9_lad7d1coPG9PyN_F_SknWndgE",
+                authDomain: "grabfldeployment.firebaseapp.com",
+                databaseURL: "https://grabfldeployment-default-rtdb.asia-southeast1.firebasedatabase.app",
+                projectId: "grabfldeployment",
+                storageBucket: "grabfldeployment.firebasestorage.app",
+                messagingSenderId: "968350518207",
+                appId: "1:968350518207:web:31c304f70a6c1558c8ef0a"
+            };
+            
+            const app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+            
+            // Listen for changes
+            const installationsRef = ref(db, 'installations');
+            onValue(installationsRef, (snapshot) => {
+                const data = snapshot.val();
+                installations = data ? Object.values(data) : [];
+                renderInstallations();
+                updatePreview();
+            });
+            
+            const deployedRef = ref(db, 'deployed');
+            onValue(deployedRef, (snapshot) => {
+                const data = snapshot.val();
+                deployed = data ? Object.values(data) : [];
+                renderDeployed();
+            });
+        } else {
+            // Use localStorage
+            loadFromLocalStorage();
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('installations');
+            if (saved) {
+                installations = JSON.parse(saved);
+            }
+            const savedDeployed = localStorage.getItem('deployed');
+            if (savedDeployed) {
+                deployed = JSON.parse(savedDeployed);
+            }
+            renderInstallations();
+            renderDeployed();
+            updatePreview();
+        }
+
+        function saveToStorage() {
+            if (USE_FIREBASE && db) {
+                const installationsRef = ref(db, 'installations');
+                set(installationsRef, installations);
+                
+                const deployedRef = ref(db, 'deployed');
+                set(deployedRef, deployed);
+            } else {
+                localStorage.setItem('installations', JSON.stringify(installations));
+                localStorage.setItem('deployed', JSON.stringify(deployed));
+            }
+        }
+
+        window.addInstallation = function() {
+            const installation = {
+                id: Date.now(),
+                date: '',
+                dateTBC: true,
+                timeStart: '',
+                timeEnd: '',
+                place: '',
+                address: '',
+                lockers: '',
+                remarks: '',
+                image: null
+            };
+            
+            installations.push(installation);
+            saveToStorage();
+            renderInstallations();
+            updatePreview();
+        };
+
+        window.removeInstallation = function(id) {
+            const installation = installations.find(inst => inst.id === id);
+            const placeName = installation ? installation.place || 'this installation' : 'this installation';
+            
+            const confirmDelete = confirm(`Are you sure you want to delete "${placeName}"?\n\nThis action cannot be undone.`);
+            
+            if (confirmDelete) {
+                installations = installations.filter(inst => inst.id !== id);
+                saveToStorage();
+                renderInstallations();
+                updatePreview();
+            }
+        };
+
+        window.completeInstallation = function(id) {
+            const installation = installations.find(inst => inst.id === id);
+            if (installation && installation.place) {
+                const confirmDeploy = confirm(`Mark "${installation.place}" as deployed?\n\nThis will move it to the Deployed section and cannot be undone.`);
+                
+                if (confirmDeploy) {
+                    // Add to deployed list
+                    deployed.push({
+                        id: installation.id,
+                        place: installation.place,
+                        completedAt: new Date().toISOString()
+                    });
+                    
+                    // Remove from installations
+                    installations = installations.filter(inst => inst.id !== id);
+                    
+                    saveToStorage();
+                    renderInstallations();
+                    renderDeployed();
+                    updatePreview();
+                }
+            } else {
+                alert('Please add a Place name before marking as complete!');
+            }
+        };
+
+
+        window.updateInstallation = function(id, field, value) {
+            const installation = installations.find(inst => inst.id === id);
+            if (installation) {
+                installation[field] = value;
+                saveToStorage();
+                updatePreview();
+            }
+        };
+
+        window.moveInstallationUp = function(id) {
+            const index = installations.findIndex(inst => inst.id === id);
+            if (index > 0) {
+                // Swap with previous item
+                [installations[index - 1], installations[index]] = [installations[index], installations[index - 1]];
+                saveToStorage();
+                renderInstallations();
+                updatePreview();
+            }
+        };
+
+        window.moveInstallationDown = function(id) {
+            const index = installations.findIndex(inst => inst.id === id);
+            if (index < installations.length - 1) {
+                // Swap with next item
+                [installations[index], installations[index + 1]] = [installations[index + 1], installations[index]];
+                saveToStorage();
+                renderInstallations();
+                updatePreview();
+            }
+        };
+
+        window.handleImageUpload = function(id, event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Check if it's an image
+            if (!file.type.match('image/(jpeg|jpg|png)')) {
+                alert('Please upload only JPG or PNG images.');
+                event.target.value = '';
+                return;
+            }
+
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB.');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const installation = installations.find(inst => inst.id === id);
+                if (installation) {
+                    installation.image = e.target.result;
+                    saveToStorage();
+                    renderInstallations();
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.removeImage = function(id) {
+            const installation = installations.find(inst => inst.id === id);
+            if (installation) {
+                installation.image = null;
+                saveToStorage();
+                renderInstallations();
+            }
+        };
+
+        function renderInstallations() {
+            const list = document.getElementById('installationsList');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (installations.length === 0) {
+                list.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            list.innerHTML = installations.map((inst, index) => `
+                <div class="installation-item">
+                    <div class="action-buttons">
+                        <button class="move-btn" onclick="moveInstallationUp(${inst.id})" title="Move up" ${index === 0 ? 'disabled' : ''}>↑</button>
+                        <button class="move-btn" onclick="moveInstallationDown(${inst.id})" title="Move down" ${index === installations.length - 1 ? 'disabled' : ''}>↓</button>
+                        <button class="remove-btn" onclick="removeInstallation(${inst.id})" title="Delete">×</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Date & Time</label>
+                        <div class="date-time-row">
+                            <input 
+                                type="date" 
+                                value="${inst.date || ''}" 
+                                onchange="updateInstallation(${inst.id}, 'date', this.value)"
+                                ${inst.dateTBC ? 'disabled' : ''}
+                            >
+                        </div>
+                        <div class="time-range-container">
+                            <div class="time-input-group">
+                                <label>Start Time</label>
+                                <input 
+                                    type="time" 
+                                    value="${inst.timeStart || ''}" 
+                                    onchange="updateInstallation(${inst.id}, 'timeStart', this.value)"
+                                    ${inst.dateTBC ? 'disabled' : ''}
+                                >
+                            </div>
+                            <div class="time-input-group">
+                                <label>End Time</label>
+                                <input 
+                                    type="time" 
+                                    value="${inst.timeEnd || ''}" 
+                                    onchange="updateInstallation(${inst.id}, 'timeEnd', this.value)"
+                                    ${inst.dateTBC ? 'disabled' : ''}
+                                >
+                            </div>
+                        </div>
+                        <div class="date-tbc-checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="tbc-${inst.id}"
+                                ${inst.dateTBC ? 'checked' : ''}
+                                onchange="updateInstallation(${inst.id}, 'dateTBC', this.checked); renderInstallations();"
+                            >
+                            <label for="tbc-${inst.id}">Date TBC</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Place</label>
+                        <input 
+                            type="text" 
+                            placeholder="e.g., Parkview Apartments" 
+                            value="${inst.place || ''}"
+                            onchange="updateInstallation(${inst.id}, 'place', this.value)"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input 
+                            type="text" 
+                            placeholder="e.g., 1 Bukit Batok Street 25 Singapore 658882" 
+                            value="${inst.address || ''}"
+                            onchange="updateInstallation(${inst.id}, 'address', this.value)"
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>No. of Lockers</label>
+                        <select 
+                            value="${inst.lockers || ''}"
+                            onchange="updateInstallation(${inst.id}, 'lockers', this.value)"
+                        >
+                            <option value="">Select locker configuration</option>
+                            <option value="1M" ${inst.lockers === '1M' ? 'selected' : ''}>1M</option>
+                            <option value="1M1S" ${inst.lockers === '1M1S' ? 'selected' : ''}>1M1S</option>
+                            <option value="1M2S" ${inst.lockers === '1M2S' ? 'selected' : ''}>1M2S</option>
+                            <option value="1M3S" ${inst.lockers === '1M3S' ? 'selected' : ''}>1M3S</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        <textarea 
+                            placeholder="e.g., Power outlet is available" 
+                            onchange="updateInstallation(${inst.id}, 'remarks', this.value)"
+                        >${inst.remarks || ''}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Site Image</label>
+                        <div class="image-upload-container">
+                            <label for="image-${inst.id}" class="image-upload-label">
+                                📷 ${inst.image ? 'Change Image' : 'Upload Image'}
+                            </label>
+                            <input 
+                                type="file" 
+                                id="image-${inst.id}" 
+                                class="image-upload-input"
+                                accept="image/jpeg,image/jpg,image/png"
+                                onchange="handleImageUpload(${inst.id}, event)"
+                            >
+                            ${inst.image ? `<button class="remove-image-btn" onclick="removeImage(${inst.id})">Remove Image</button>` : ''}
+                        </div>
+                        ${inst.image ? `<img src="${inst.image}" alt="Site image" class="image-preview">` : ''}
+                    </div>
+                    
+                    <button class="deploy-btn" onclick="completeInstallation(${inst.id})">
+                        ✅ Deployed
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updatePreview() {
+            const previewBox = document.getElementById('previewBox');
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            
+            if (installations.length === 0) {
+                previewBox.textContent = '';
+                whatsappBtn.disabled = true;
+                return;
+            }
+            
+            whatsappBtn.disabled = false;
+            
+            // Always use TODAY's date (updates every time you open/refresh)
+            const today = new Date();
+            const day = today.getDate();
+            const month = today.toLocaleDateString('en-GB', { month: 'short' });
+            const year = today.getFullYear();
+            const dateStr = `${day} ${month} ${year}`;
+            
+            let message = `🛠️Upcoming installations (as of ${dateStr})🛠️\n\n`;
+            
+            installations.forEach(inst => {
+                let dateDisplay;
+                if (inst.dateTBC || !inst.date) {
+                    dateDisplay = 'TBC ⏰';
+                } else {
+                    const date = new Date(inst.date + 'T00:00:00');
+                    const dayName = date.toLocaleDateString('en-GB', { weekday: 'short' });
+                    const day = date.getDate();
+                    const month = date.toLocaleDateString('en-GB', { month: 'short' });
+                    
+                    // Format time in 24-hour format (HHMM)
+                    let timeRange = '';
+                    if (inst.timeStart && inst.timeEnd) {
+                        const startTime = inst.timeStart.replace(':', '') + 'H';
+                        const endTime = inst.timeEnd.replace(':', '') + 'H';
+                        timeRange = ` ${startTime} - ${endTime}`;
+                    }
+                    
+                    dateDisplay = `${dayName} ${day} ${month}${timeRange} ✅`;
+                }
+                
+                message += `Date: ${dateDisplay}\n`;
+                message += `Place: ${inst.place || '[Not set]'}\n`;
+                message += `Address: ${inst.address || '[Not set]'}\n`;
+                message += `No. of Lockers: ${inst.lockers || '[Not set]'}\n`;
+                message += `Remarks: ${inst.remarks || '[Not set]'}\n\n`;
+            });
+            
+            message += '-end-';
+            
+            previewBox.textContent = message;
+            window.currentMessage = message;
+        }
+
+        window.shareToWhatsApp = function() {
+            if (!window.currentMessage) return;
+            
+            const encodedMessage = encodeURIComponent(window.currentMessage);
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        };
+
+        function renderDeployed() {
+            const list = document.getElementById('deployedList');
+            const emptyState = document.getElementById('deployedEmptyState');
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            
+            if (deployed.length === 0) {
+                list.innerHTML = '';
+                emptyState.style.display = 'block';
+                clearAllBtn.style.display = 'none';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            clearAllBtn.style.display = 'flex';
+            
+            list.innerHTML = deployed.map(item => `
+                <div class="deployed-item">
+                    <span style="font-size: 20px;">✅</span>
+                    <span class="deployed-item-text">${item.place}</span>
+                </div>
+            `).join('');
+        }
+
+        window.clearAllDeployed = function() {
+            const passcode = prompt('Enter passcode to clear all deployed installations:');
+            
+            if (passcode === null) {
+                // User clicked cancel
+                return;
+            }
+            
+            if (passcode === '1234') {
+                const confirmDelete = confirm(`Are you sure you want to delete all ${deployed.length} deployed installation(s)? This cannot be undone.`);
+                
+                if (confirmDelete) {
+                    deployed = [];
+                    saveToStorage();
+                    renderDeployed();
+                    alert('All deployed installations have been cleared.');
+                }
+            } else {
+                alert('Incorrect passcode. Access denied.');
+            }
+        };
+
+        // PWA Installation Prompt
+        let deferredPrompt;
+        let installButton;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA: Install prompt triggered');
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button if not already installed
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                showInstallButton();
+            }
+        });
+
+        function showInstallButton() {
+            // Create install button
+            const installBtn = document.createElement('button');
+            installBtn.innerHTML = '📱 Install App';
+            installBtn.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                padding: 12px 20px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                transition: all 0.2s ease;
+            `;
+            
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log('PWA: Install outcome', outcome);
+                    deferredPrompt = null;
+                    installBtn.remove();
+                }
+            });
+            
+            document.body.appendChild(installBtn);
+        }
+
+        // Check if app is already installed
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA: App was installed');
+            // Hide install button
+            const installBtn = document.querySelector('button[style*="position: fixed"]');
+            if (installBtn) installBtn.remove();
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('PWA: Service Worker registered', registration);
+                    })
+                    .catch(error => {
+                        console.log('PWA: Service Worker registration failed', error);
+                    });
+            });
+        }
+
+        // Make functions globally available
+        window.installations = installations;
+        window.deployed = deployed;
+        window.renderInstallations = renderInstallations;
+        window.renderDeployed = renderDeployed;
+        window.updatePreview = updatePreview;
+    </script>
+</body>
+</html>
+
