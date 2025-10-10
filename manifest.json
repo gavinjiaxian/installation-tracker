@@ -2,7 +2,7 @@
   "name": "Installation Tracker",
   "short_name": "InstTracker",
   "description": "Track locker installations and deployments with real-time sync",
-  "start_url": "/installation_tracker.html",
+  "start_url": "https://gavinjiaxian.github.io/installation-tracker/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#667eea",
@@ -26,3 +26,4 @@
   "lang": "en",
   "dir": "ltr"
 }
+
