@@ -1,6 +1,7 @@
 {
   "name": "Installation Tracker",
   "short_name": "InstTracker",
+  "version": "1.0.1",
   "description": "Track locker installations and deployments with real-time sync",
   "start_url": "https://gavinjiaxian.github.io/installation-tracker/",
   "display": "standalone",
