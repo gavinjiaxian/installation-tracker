@@ -1,4 +1,4 @@
-const CACHE_NAME = 'installation-tracker-v1.0.0';
+const CACHE_NAME = 'installation-tracker-v1.0.1';
 const urlsToCache = [
   '/',
   '/installation_tracker.html',
@@ -157,3 +157,5 @@ async function syncOfflineData() {
     console.log('Service Worker: Sync failed', error);
   }
 }
+
+
