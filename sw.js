@@ -1,6 +1,7 @@
-const CACHE_NAME = 'installation-tracker-v1.0.1';
+const CACHE_NAME = 'installation-tracker-v1.1.0';
 const urlsToCache = [
   '/',
+  '/index.html',
   '/installation_tracker.html',
   '/manifest.json',
   'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js',
@@ -157,5 +158,6 @@ async function syncOfflineData() {
     console.log('Service Worker: Sync failed', error);
   }
 }
+
 
 
