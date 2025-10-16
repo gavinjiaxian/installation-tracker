@@ -5,8 +5,8 @@
   "description": "Track locker installations and deployments with real-time sync",
   "start_url": "/installation-tracker/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#2d5016",
+  "theme_color": "#2d5016",
   "orientation": "portrait",
   "scope": "/",
   "icons": [
@@ -27,5 +27,3 @@
   "lang": "en",
   "dir": "ltr"
 }
-
-
