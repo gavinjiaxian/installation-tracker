@@ -7,7 +7,7 @@
     
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#2d5016">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="InstTracker">
@@ -27,7 +27,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2d5016 0%, #1a3009 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -169,7 +169,7 @@
         }
 
         .move-btn {
-            background: #667eea;
+            background: #2d5016;
             font-size: 16px;
         }
 
@@ -276,7 +276,7 @@
 
         input:focus, textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2d5016;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
@@ -544,7 +544,7 @@
         .image-upload-label {
             display: inline-block;
             padding: 10px 16px;
-            background: #667eea;
+            background: #2d5016;
             color: white;
             border-radius: 8px;
             cursor: pointer;
@@ -707,6 +707,40 @@
             
             dataLoadedAndNotificationShown = true;
         }
+
+        function showGrabReminder() {
+            // Only show once after data is loaded
+            if (dataLoadedAndNotificationShown) return;
+            
+            // Find the earliest upcoming installation
+            const upcomingInstallations = installations.filter(inst => inst.date && !inst.dateTBC);
+            
+            if (upcomingInstallations.length === 0) {
+                alert(`📅 Grab Reminder\n\nNo upcoming installations scheduled.\n\nAdd new jobs to track your installations.`);
+            } else {
+                // Sort by date to find the earliest
+                const sortedByDate = upcomingInstallations.sort((a, b) => new Date(a.date) - new Date(b.date));
+                const earliest = sortedByDate[0];
+                
+                // Format the date nicely
+                const date = new Date(earliest.date + 'T00:00:00');
+                const dayName = date.toLocaleDateString('en-GB', { weekday: 'long' });
+                const day = date.getDate();
+                const month = date.toLocaleDateString('en-GB', { month: 'long' });
+                const year = date.getFullYear();
+                const formattedDate = `${dayName}, ${day} ${month} ${year}`;
+                
+                // Format time if available
+                let timeInfo = '';
+                if (earliest.timeStart && earliest.timeEnd) {
+                    timeInfo = `\n⏰ Time: ${earliest.timeStart} - ${earliest.timeEnd}`;
+                }
+                
+                alert(`📅 Grab Reminder\n\nYour earliest upcoming installation:\n\n📍 ${earliest.place || '[Location not set]'}\n📅 ${formattedDate}${timeInfo}\n🔧 Service: ${earliest.serviceType || 'Installation'}\n\nMake sure you're prepared for this job!`);
+            }
+            
+            dataLoadedAndNotificationShown = true;
+        }
         
         // Logout function
         window.logout = function() {
@@ -755,9 +789,11 @@
                 renderInstallations();
                 updatePreview();
                 
-                // Show Urban Makers reminder after data is loaded
+                // Show appropriate reminder after data is loaded
                 if (company === 'Urban Makers') {
                     showUrbanMakersReminder();
+                } else if (company === 'Grab') {
+                    showGrabReminder();
                 }
             });
             
@@ -785,9 +821,11 @@
             renderDeployed();
             updatePreview();
             
-            // Show Urban Makers reminder after data is loaded
+            // Show appropriate reminder after data is loaded
             if (company === 'Urban Makers') {
                 showUrbanMakersReminder();
+            } else if (company === 'Grab') {
+                showGrabReminder();
             }
         }
 
@@ -1309,7 +1347,7 @@
             const year = today.getFullYear();
             const dateStr = `${day} ${month} ${year}`;
             
-            let message = `🛠️Upcoming installations (as of ${dateStr})🛠️\n\n`;
+            let message = `🛠️Upcoming Jobs (as of ${dateStr})🛠️\n\n`;
             
                 // Sort installations for WhatsApp message
                 const sortedInstallations = sortInstallations(installations);
@@ -1559,7 +1597,7 @@
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: #667eea;
+                background: #2d5016;
                 color: white;
                 border: none;
                 border-radius: 25px;
