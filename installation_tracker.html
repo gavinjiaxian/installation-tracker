@@ -589,9 +589,17 @@
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h1>🛠️ Job Tracker</h1>
-                <button onclick="logout()" style="background: #fc8181; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600;" title="Logout and switch account">
-                    🚪 Logout
-                </button>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="showDebugInfo()" style="background: #4299e1; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600;" title="Show connection status">
+                        🔍 Debug
+                    </button>
+                    <button onclick="clearLocalCache()" style="background: #f59e0b; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600;" title="Clear local cache and reload from Firebase">
+                        🔄 Refresh
+                    </button>
+                    <button onclick="logout()" style="background: #fc8181; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600;" title="Logout and switch account">
+                        🚪 Logout
+                    </button>
+                </div>
             </div>
             <p class="subtitle" id="companySubtitle">Manage upcoming installations and share via WhatsApp</p>
 
@@ -752,6 +760,107 @@
             }
         };
         
+        // Clear local cache function
+        window.clearLocalCache = function() {
+            const confirmClear = confirm('🔄 Refresh from Firebase?\n\nThis will:\n• Clear your phone\'s cache\n• Reload fresh data from Firebase\n• Your data in Firebase is SAFE - not deleted!\n• All installations will reload from the cloud\n\nContinue?');
+            
+            if (confirmClear) {
+                console.log('Clearing local cache...');
+                
+                // Clear localStorage (but keep auth info)
+                const savedAuth = localStorage.getItem('authenticated');
+                const savedCompany = localStorage.getItem('company');
+                
+                localStorage.clear();
+                
+                // Restore auth info
+                if (savedAuth) localStorage.setItem('authenticated', savedAuth);
+                if (savedCompany) localStorage.setItem('company', savedCompany);
+                
+                console.log('Local cache cleared, reloading page...');
+                
+                // Reload the page
+                window.location.reload(true);
+            }
+        };
+        
+        // Debug function to check connection status
+        window.showDebugInfo = function() {
+            const status = [];
+            
+            status.push('🔧 REAL-TIME DEBUG INFO\n');
+            status.push('════════════════════\n\n');
+            
+            // Company info
+            status.push(`👤 Company: ${company || 'Not set'}\n`);
+            status.push(`🔐 Authenticated: ${isAuthenticated ? 'Yes' : 'No'}\n\n`);
+            
+            // Firebase REAL status
+            status.push('☁️ FIREBASE STATUS:\n');
+            status.push(`  Code Enabled: ${USE_FIREBASE ? '✅ Yes' : '❌ No'}\n`);
+            status.push(`  Initialized: ${firebaseStatus.initialized ? '✅ Yes' : '❌ No'}\n`);
+            status.push(`  Connected: ${firebaseStatus.connected ? '✅ Yes' : '❌ No'}\n`);
+            status.push(`  Data Loaded: ${firebaseStatus.dataLoaded ? '✅ Yes' : '❌ No'}\n\n`);
+            
+            // Timestamps
+            if (firebaseStatus.installationsLoadTime) {
+                status.push(`⏰ Last Data Load:\n`);
+                status.push(`  ${firebaseStatus.installationsLoadTime}\n\n`);
+            } else {
+                status.push(`⏰ Last Data Load: ❌ NEVER\n\n`);
+            }
+            
+            // Error info
+            if (firebaseStatus.lastError) {
+                status.push(`❌ LAST ERROR:\n`);
+                status.push(`  ${firebaseStatus.lastError}\n\n`);
+            }
+            
+            // Data counts
+            status.push('📊 DATA COUNTS:\n');
+            status.push(`  Installations: ${installations.length}\n`);
+            status.push(`  Deployed: ${deployed.length}\n\n`);
+            
+            // Browser/Network
+            status.push('🌐 NETWORK:\n');
+            status.push(`  Device: ${navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}\n`);
+            status.push(`  Online: ${navigator.onLine ? '✅ Yes' : '❌ No'}\n\n`);
+            
+            // Sample data
+            if (installations.length > 0) {
+                status.push(`📍 SAMPLE DATA:\n`);
+                const first = installations[0];
+                status.push(`  Place: ${first.place || '[Empty]'}\n`);
+                status.push(`  Date: ${first.date || '[Empty]'}\n`);
+            } else {
+                status.push(`📍 SAMPLE DATA: ❌ No installations\n`);
+            }
+            
+            status.push('\n════════════════════\n');
+            
+            // Diagnosis
+            if (!firebaseStatus.initialized) {
+                status.push('❌ PROBLEM: Firebase failed to initialize!\n');
+                status.push('→ Check internet connection\n');
+            } else if (!firebaseStatus.connected) {
+                status.push('❌ PROBLEM: Firebase not connected!\n');
+                status.push('→ Check Firebase rules\n');
+                status.push('→ Check internet connection\n');
+            } else if (!firebaseStatus.dataLoaded) {
+                status.push('⚠️ WARNING: Data not loaded yet\n');
+                status.push('→ Wait a few seconds\n');
+                status.push('→ Or refresh the page\n');
+            } else if (installations.length === 0) {
+                status.push('⚠️ INFO: Connected but no data\n');
+                status.push('→ Database might be empty\n');
+                status.push('→ Or data is in wrong format\n');
+            } else {
+                status.push('✅ Everything looks good!\n');
+            }
+            
+            alert(status.join(''));
+        };
+        
         // Firebase configuration for shared data storage
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, set, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
@@ -763,6 +872,18 @@
         let installations = [];
         let deployed = [];
         let db = null;
+        
+        // Track actual Firebase status for debugging
+        let firebaseStatus = {
+            initialized: false,
+            connected: false,
+            dataLoaded: false,
+            lastError: null,
+            installationsLoadTime: null,
+            deployedLoadTime: null,
+            installationsCount: 0,
+            deployedCount: 0
+        };
 
         // Initialize storage
         if (USE_FIREBASE) {
@@ -778,31 +899,91 @@
                 appId: "1:968350518207:web:31c304f70a6c1558c8ef0a"
             };
             
-            const app = initializeApp(firebaseConfig);
-            db = getDatabase(app);
-            
-            // Listen for changes
-            const installationsRef = ref(db, 'installations');
-            onValue(installationsRef, (snapshot) => {
-                const data = snapshot.val();
-                installations = data ? Object.values(data) : [];
-                renderInstallations();
-                updatePreview();
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getDatabase(app);
                 
-                // Show appropriate reminder after data is loaded
-                if (company === 'Urban Makers') {
-                    showUrbanMakersReminder();
-                } else if (company === 'Grab') {
-                    showGrabReminder();
-                }
-            });
-            
-            const deployedRef = ref(db, 'deployed');
-            onValue(deployedRef, (snapshot) => {
-                const data = snapshot.val();
-                deployed = data ? Object.values(data) : [];
-                renderDeployed();
-            });
+                firebaseStatus.initialized = true;
+                console.log('Firebase initialized successfully');
+                
+                // Listen for changes - installations
+                const installationsRef = ref(db, 'installations');
+                onValue(installationsRef, (snapshot) => {
+                    console.log('Firebase: Loading installations data...');
+                    const data = snapshot.val();
+                    console.log('Firebase: Raw data received:', data);
+                    
+                    firebaseStatus.connected = true;
+                    firebaseStatus.installationsLoadTime = new Date().toLocaleString();
+                    
+                    if (data === null || data === undefined) {
+                        console.log('Firebase: No data found, starting with empty array');
+                        installations = [];
+                    } else if (Array.isArray(data)) {
+                        console.log('Firebase: Data is array, using directly');
+                        installations = data.filter(item => item !== null && item !== undefined);
+                    } else if (typeof data === 'object') {
+                        console.log('Firebase: Data is object, converting to array');
+                        installations = Object.values(data).filter(item => item !== null && item !== undefined);
+                    } else {
+                        console.log('Firebase: Unexpected data type, starting with empty array');
+                        installations = [];
+                    }
+                    
+                    firebaseStatus.installationsCount = installations.length;
+                    firebaseStatus.dataLoaded = true;
+                    
+                    console.log('Firebase: Loaded', installations.length, 'installations');
+                    renderInstallations();
+                    updatePreview();
+                    
+                    // Show appropriate reminder after data is loaded
+                    if (company === 'Urban Makers') {
+                        showUrbanMakersReminder();
+                    } else if (company === 'Grab') {
+                        showGrabReminder();
+                    }
+                }, (error) => {
+                    console.error('Firebase: Error loading installations:', error);
+                    firebaseStatus.connected = false;
+                    firebaseStatus.lastError = error.message || error.toString();
+                    alert('⚠️ Connection Error\n\nCould not load installations from Firebase.\nPlease check your internet connection and refresh the page.\n\nError: ' + firebaseStatus.lastError);
+                });
+                
+                // Listen for changes - deployed
+                const deployedRef = ref(db, 'deployed');
+                onValue(deployedRef, (snapshot) => {
+                    console.log('Firebase: Loading deployed data...');
+                    const data = snapshot.val();
+                    
+                    firebaseStatus.deployedLoadTime = new Date().toLocaleString();
+                    
+                    if (data === null || data === undefined) {
+                        deployed = [];
+                    } else if (Array.isArray(data)) {
+                        deployed = data.filter(item => item !== null && item !== undefined);
+                    } else if (typeof data === 'object') {
+                        deployed = Object.values(data).filter(item => item !== null && item !== undefined);
+                    } else {
+                        deployed = [];
+                    }
+                    
+                    firebaseStatus.deployedCount = deployed.length;
+                    
+                    console.log('Firebase: Loaded', deployed.length, 'deployed installations');
+                    renderDeployed();
+                }, (error) => {
+                    console.error('Firebase: Error loading deployed:', error);
+                    firebaseStatus.lastError = error.message || error.toString();
+                });
+                
+            } catch (error) {
+                console.error('Firebase: Initialization error:', error);
+                firebaseStatus.initialized = false;
+                firebaseStatus.connected = false;
+                firebaseStatus.lastError = error.message || error.toString();
+                alert('⚠️ Firebase Connection Failed\n\nCould not connect to Firebase.\nPlease check your internet connection and refresh the page.\n\nError: ' + error.message);
+            }
         } else {
             // Use localStorage
             loadFromLocalStorage();
@@ -831,11 +1012,37 @@
 
         function saveToStorage() {
             if (USE_FIREBASE && db) {
-                const installationsRef = ref(db, 'installations');
-                set(installationsRef, installations);
-                
-                const deployedRef = ref(db, 'deployed');
-                set(deployedRef, deployed);
+                try {
+                    console.log('Firebase: Saving', installations.length, 'installations...');
+                    const installationsRef = ref(db, 'installations');
+                    
+                    // Filter out null/undefined items before saving
+                    const cleanInstallations = installations.filter(item => item !== null && item !== undefined);
+                    
+                    set(installationsRef, cleanInstallations)
+                        .then(() => {
+                            console.log('Firebase: Installations saved successfully');
+                        })
+                        .catch((error) => {
+                            console.error('Firebase: Error saving installations:', error);
+                            alert('⚠️ Save Error\n\nCould not save installations to Firebase.\nYour changes may not sync to other devices.\n\nError: ' + error.message);
+                        });
+                    
+                    console.log('Firebase: Saving', deployed.length, 'deployed...');
+                    const deployedRef = ref(db, 'deployed');
+                    const cleanDeployed = deployed.filter(item => item !== null && item !== undefined);
+                    
+                    set(deployedRef, cleanDeployed)
+                        .then(() => {
+                            console.log('Firebase: Deployed saved successfully');
+                        })
+                        .catch((error) => {
+                            console.error('Firebase: Error saving deployed:', error);
+                        });
+                } catch (error) {
+                    console.error('Firebase: Save error:', error);
+                    alert('⚠️ Save Error\n\nCould not save to Firebase.\n\nError: ' + error.message);
+                }
             } else {
                 localStorage.setItem('installations', JSON.stringify(installations));
                 localStorage.setItem('deployed', JSON.stringify(deployed));
