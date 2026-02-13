@@ -619,6 +619,43 @@
             margin-bottom: 4px;
         }
 
+        /* Date/Time input with clear button */
+        .date-time-input-wrapper {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .date-time-input-wrapper input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .clear-input-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .clear-input-btn:hover {
+            background: #fc8181;
+            color: white;
+        }
+
+        .clear-input-btn:active {
+            transform: scale(0.95);
+        }
+
         .date-time-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1458,6 +1495,30 @@
                 }
             }
         };
+
+        // Clear date input (works on iOS)
+        window.clearDateInput = function(id) {
+            const installation = installations.find(inst => inst.id === id);
+            if (installation) {
+                installation.date = '';
+                saveToStorage();
+                updatePreview();
+                renderInstallations();
+                console.log('Cleared date for installation:', id);
+            }
+        };
+
+        // Clear time input (works on iOS)
+        window.clearTimeInput = function(id) {
+            const installation = installations.find(inst => inst.id === id);
+            if (installation) {
+                installation.timeStart = '';
+                saveToStorage();
+                updatePreview();
+                renderInstallations();
+                console.log('Cleared time for installation:', id);
+            }
+        };
         
         // Trigger smooth auto-collapse animation when card becomes complete
         window.triggerAutoCollapse = function(id) {
@@ -2009,23 +2070,29 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <div>
                                 <label style="font-size: 12px; margin-bottom: 4px; display: block;">Date</label>
-                                <input 
-                                    type="date" 
-                                    value="${inst.date || ''}" 
-                                    onchange="updateInstallation(${inst.id}, 'date', this.value)"
-                                    onkeydown="handleEnterKey(event, ${inst.id}, 'date')"
-                                    style="width: 100%;"
-                                >
+                                <div class="date-time-input-wrapper">
+                                    <input 
+                                        type="date" 
+                                        id="date-input-${inst.id}"
+                                        value="${inst.date || ''}" 
+                                        onchange="updateInstallation(${inst.id}, 'date', this.value)"
+                                        onkeydown="handleEnterKey(event, ${inst.id}, 'date')"
+                                    >
+                                    <button type="button" class="clear-input-btn" onclick="clearDateInput(${inst.id})" title="Clear date">✕</button>
+                                </div>
                             </div>
                             <div>
                                 <label style="font-size: 12px; margin-bottom: 4px; display: block;">Start Time</label>
-                                <input 
-                                    type="time" 
-                                    value="${inst.timeStart || ''}" 
-                                    onchange="updateInstallation(${inst.id}, 'timeStart', this.value)"
-                                    onkeydown="handleEnterKey(event, ${inst.id}, 'timeStart')"
-                                    style="width: 100%;"
-                                >
+                                <div class="date-time-input-wrapper">
+                                    <input 
+                                        type="time" 
+                                        id="time-input-${inst.id}"
+                                        value="${inst.timeStart || ''}" 
+                                        onchange="updateInstallation(${inst.id}, 'timeStart', this.value)"
+                                        onkeydown="handleEnterKey(event, ${inst.id}, 'timeStart')"
+                                    >
+                                    <button type="button" class="clear-input-btn" onclick="clearTimeInput(${inst.id})" title="Clear time">✕</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2162,9 +2229,7 @@
                 message += `   ${address}\n\n`;
             });
             
-            message += `Please arrange scheduling.`;
-            
-            previewBox.textContent = message;
+            previewBox.textContent = message.trim();
             window.currentMessage = message;
 
             // Update Warehouse Message Preview
