@@ -71,6 +71,77 @@
             gap: 10px;
         }
 
+        /* Page header with title and action buttons */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+
+        .page-header h1 {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .header-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .header-btn.debug {
+            background: #4299e1;
+        }
+
+        .header-btn.refresh {
+            background: #f59e0b;
+        }
+
+        .header-btn.logout {
+            background: #fc8181;
+        }
+
+        .header-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 600px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .header-buttons {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .header-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
         .subtitle {
             color: #718096;
             margin-bottom: 30px;
@@ -774,16 +845,16 @@
     <div class="container">
         <!-- Left Panel: Form and Installations -->
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div class="page-header">
                 <h1>🛠️ Job Tracker</h1>
-                <div style="display: flex; gap: 8px;">
-                    <button onclick="showDebugInfo()" style="background: #4299e1; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600;" title="Show connection status">
+                <div class="header-buttons">
+                    <button class="header-btn debug" onclick="showDebugInfo()" title="Show connection status">
                         🔍 Debug
                     </button>
-                    <button onclick="clearLocalCache()" style="background: #f59e0b; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600;" title="Clear local cache and reload from Firebase">
+                    <button class="header-btn refresh" onclick="clearLocalCache()" title="Clear local cache and reload from Firebase">
                         🔄 Refresh
                     </button>
-                    <button onclick="logout()" style="background: #fc8181; color: white; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 600;" title="Logout and switch account">
+                    <button class="header-btn logout" onclick="logout()" title="Logout and switch account">
                         🚪 Logout
                     </button>
                 </div>
