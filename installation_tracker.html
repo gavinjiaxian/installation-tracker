@@ -140,48 +140,47 @@
             }
         }
 
-        .action-buttons {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .remove-btn, .move-btn {
+        .remove-btn {
             background: #fc8181;
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .remove-btn:hover {
+            background: #e53e3e;
+            transform: scale(1.05);
+        }
+
+        .collapse-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
         }
 
-        .remove-btn:hover {
-            background: #f56565;
-            transform: scale(1.1);
-        }
-
-        .move-btn {
-            background: #2d5016;
-            font-size: 16px;
-        }
-
-        .move-btn:hover:not(:disabled) {
-            background: #5a67d8;
-            transform: scale(1.1);
-        }
-
-        .move-btn:disabled {
-            background: #cbd5e0;
-            cursor: not-allowed;
-            opacity: 0.5;
+        .collapse-btn:hover {
+            background: #3182ce;
+            transform: scale(1.05);
         }
 
         .deploy-btn {
@@ -486,6 +485,34 @@
             transform: none;
         }
 
+        .export-excel-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .export-excel-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .export-excel-btn:active {
+            transform: translateY(0);
+        }
+
         .date-tbc-checkbox {
             display: flex;
             align-items: center;
@@ -581,6 +608,166 @@
             background: #f56565;
             transform: translateY(-1px);
         }
+
+        /* Collapsed card styles */
+        .installation-item.collapsed {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .installation-item.collapsed:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .collapsed-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .collapsed-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .collapsed-place {
+            font-weight: 600;
+            color: #2d3748;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .collapsed-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .collapsed-badge {
+            background: #e6f7ff;
+            color: #0066cc;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .expand-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .expand-btn:hover {
+            background: #3182ce;
+            transform: scale(1.05);
+        }
+
+        /* Animation for card expansion/collapse */
+        .installation-item {
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .installation-item.expanding {
+            animation: expandCard 0.4s ease forwards;
+        }
+
+        .installation-item.collapsing {
+            animation: collapseCard 0.5s ease forwards;
+        }
+
+        .installation-item.auto-collapsing {
+            animation: autoCollapseCard 0.6s ease forwards;
+        }
+
+        @keyframes expandCard {
+            from {
+                max-height: 60px;
+                opacity: 0.8;
+                transform: scale(0.98);
+            }
+            to {
+                max-height: 1500px;
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes collapseCard {
+            from {
+                max-height: 1500px;
+                opacity: 1;
+            }
+            to {
+                max-height: 60px;
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes autoCollapseCard {
+            0% {
+                max-height: 800px;
+                opacity: 1;
+                transform: scale(1);
+                background: inherit;
+            }
+            30% {
+                transform: scale(1.02);
+                box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+            }
+            50% {
+                background: #c6f6d5;
+            }
+            100% {
+                max-height: 60px;
+                opacity: 1;
+                transform: scale(1);
+                background: #f0f7ff;
+            }
+        }
+
+        /* Success flash effect - Phase 1 */
+        .installation-item.success-flash {
+            background: #22c55e !important;
+            border-color: #16a34a !important;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.6) !important;
+            transform: scale(1.02) !important;
+        }
+
+        /* Collapse animation - Phase 2 */
+        .installation-item.collapse-animate {
+            max-height: 60px !important;
+            min-height: 60px !important;
+            height: 60px !important;
+            overflow: hidden !important;
+            padding: 12px 20px !important;
+            opacity: 0.95 !important;
+            transform: scale(0.98) !important;
+            background: #dbeafe !important;
+            border-color: #3b82f6 !important;
+        }
     </style>
 </head>
 <body>
@@ -626,25 +813,33 @@
         <!-- Right Panel: Preview and WhatsApp Share -->
         <div class="card preview-card">
             <div class="preview-header">
-                <h2>📱 Message Preview</h2>
+                <h2>🚨 Scheduling Alert</h2>
             </div>
             
-            <div class="preview-box" id="previewBox"></div>
+            <!-- Job Selection List for Alert -->
+            <div id="alertJobSelection" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto; border: 2px solid #fca5a5; border-radius: 8px; background: #fef2f2;">
+                <!-- Job checkboxes will be rendered here -->
+            </div>
             
-            <button class="whatsapp-btn" id="whatsappBtn" onclick="shareToWhatsApp()">
+            <div class="preview-box" id="previewBox" style="background: #fef2f2; border-color: #fca5a5;"></div>
+            
+            <button class="whatsapp-btn" id="whatsappBtn" onclick="shareToWhatsApp()" style="background: #ef4444;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
                 </svg>
-                Share to WhatsApp
+                Share Scheduling Alert
             </button>
 
-            <!-- Warehouse Message Preview -->
+            <!-- Warehouse Message -->
             <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
                 <div class="preview-header">
                     <h2>📦 Warehouse Message</h2>
                 </div>
                 
-                <div class="preview-box" id="warehousePreviewBox" style="background: #fffbeb; border-color: #fbbf24;"></div>
+                <!-- Job Selection List -->
+                <div id="warehouseJobSelection" style="margin-bottom: 15px; max-height: 200px; overflow-y: auto; border: 2px solid #fbbf24; border-radius: 8px; background: #fffbeb;">
+                    <!-- Job checkboxes will be rendered here -->
+                </div>
                 
                 <button class="whatsapp-btn" id="warehouseWhatsappBtn" onclick="shareWarehouseToWhatsApp()" style="background: #f59e0b;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -672,6 +867,10 @@
 
             <button class="clear-all-btn" id="clearAllBtn" onclick="clearAllDeployed()" style="display: none;">
                 🗑️ Clear All Deployed
+            </button>
+            
+            <button class="export-excel-btn" id="exportExcelBtn" onclick="exportToExcel()" style="display: none;">
+                📊 Export to Excel
             </button>
         </div>
     </div>
@@ -704,13 +903,13 @@
             // Only show once after data is loaded
             if (dataLoadedAndNotificationShown) return;
             
-            // Count installations with Date/Time Required checked
-            const tbcCount = installations.filter(inst => inst.dateTBC === true).length;
+            // Count incomplete installations
+            const incompleteCount = installations.filter(inst => !isJobComplete(inst)).length;
             
-            if (tbcCount > 0) {
-                alert(`⚠️ Urban Makers Reminder\n\nPlease Remember To Fix A Schedule for Jobs that are Red Border Highlighted!\n\nYou currently have ${tbcCount} installation(s) requiring scheduling.`);
+            if (incompleteCount > 0) {
+                alert(`⚠️ Urban Makers Reminder\n\nPlease complete all fields for Jobs that are Red Border Highlighted!\n\nYou currently have ${incompleteCount} installation(s) with missing information.`);
             } else {
-                alert(`✅ Urban Makers\n\nAll installations are scheduled!\n\nNo red-bordered jobs requiring attention.`);
+                alert(`✅ Urban Makers\n\nAll installations are complete!\n\nNo red-bordered jobs requiring attention.`);
             }
             
             dataLoadedAndNotificationShown = true;
@@ -720,31 +919,48 @@
             // Only show once after data is loaded
             if (dataLoadedAndNotificationShown) return;
             
-            // Find the earliest upcoming installation
-            const upcomingInstallations = installations.filter(inst => inst.date && !inst.dateTBC);
+            // Find all complete installations
+            const upcomingInstallations = installations.filter(inst => isJobComplete(inst));
             
             if (upcomingInstallations.length === 0) {
-                alert(`📅 Grab Reminder\n\nNo upcoming installations scheduled.\n\nAdd new jobs to track your installations.`);
+                alert(`📅 Grab Reminder\n\nNo complete installations scheduled.\n\nAdd new jobs and fill in all fields to track your installations.`);
             } else {
-                // Sort by date to find the earliest
+                // Sort by date to find the earliest date
                 const sortedByDate = upcomingInstallations.sort((a, b) => new Date(a.date) - new Date(b.date));
-                const earliest = sortedByDate[0];
+                const earliestDate = sortedByDate[0].date;
+                
+                // Get ALL jobs on the earliest date
+                const jobsOnEarliestDate = upcomingInstallations.filter(inst => inst.date === earliestDate);
+                
+                // Sort by start time (earliest first)
+                jobsOnEarliestDate.sort((a, b) => {
+                    const timeA = a.timeStart || '99:99';
+                    const timeB = b.timeStart || '99:99';
+                    return timeA.localeCompare(timeB);
+                });
                 
                 // Format the date nicely
-                const date = new Date(earliest.date + 'T00:00:00');
+                const date = new Date(earliestDate + 'T00:00:00');
                 const dayName = date.toLocaleDateString('en-GB', { weekday: 'long' });
                 const day = date.getDate();
                 const month = date.toLocaleDateString('en-GB', { month: 'long' });
                 const year = date.getFullYear();
                 const formattedDate = `${dayName}, ${day} ${month} ${year}`;
                 
-                // Format time if available
-                let timeInfo = '';
-                if (earliest.timeStart && earliest.timeEnd) {
-                    timeInfo = `\n⏰ Time: ${earliest.timeStart} - ${earliest.timeEnd}`;
-                }
+                // Build job list
+                let jobsList = '';
+                jobsOnEarliestDate.forEach((job, index) => {
+                    const timeStr = job.timeStart ? job.timeStart.replace(':', '') + 'H' : 'Time TBC';
+                    jobsList += `\n${index + 1}. ⏰ ${timeStr} - 📍 ${job.place || '[Location not set]'}`;
+                    if (job.lockers) {
+                        jobsList += ` (${job.lockers})`;
+                    }
+                });
                 
-                alert(`📅 Grab Reminder\n\nYour earliest upcoming installation:\n\n📍 ${earliest.place || '[Location not set]'}\n📅 ${formattedDate}${timeInfo}\n🔧 Service: ${earliest.serviceType || 'Installation'}\n\nMake sure you're prepared for this job!`);
+                const jobCount = jobsOnEarliestDate.length;
+                const jobWord = jobCount === 1 ? 'job' : 'jobs';
+                
+                alert(`📅 Grab Reminder\n\n${jobCount} ${jobWord} scheduled for:\n📅 ${formattedDate}\n${jobsList}\n\nMake sure you're prepared!`);
             }
             
             dataLoadedAndNotificationShown = true;
@@ -873,6 +1089,15 @@
         let deployed = [];
         let db = null;
         
+        // Track cards that are currently animating collapse (defined early for Firebase listener)
+        let autoCollapsingCards = new Set();
+        
+        // Track which jobs are selected for warehouse message
+        let warehouseSelectedJobs = new Set();
+        
+        // Track which jobs are selected for scheduling alert
+        let alertSelectedJobs = new Set();
+        
         // Track actual Firebase status for debugging
         let firebaseStatus = {
             initialized: false,
@@ -934,7 +1159,13 @@
                     firebaseStatus.dataLoaded = true;
                     
                     console.log('Firebase: Loaded', installations.length, 'installations');
-                    renderInstallations();
+                    
+                    // Skip render if animation is in progress
+                    if (typeof autoCollapsingCards !== 'undefined' && autoCollapsingCards.size > 0) {
+                        console.log('Firebase: Skipping render - animation in progress');
+                    } else {
+                        renderInstallations();
+                    }
                     updatePreview();
                     
                     // Show appropriate reminder after data is loaded
@@ -1053,15 +1284,14 @@
             const newInstallation = {
                 id: Date.now(),
                 date: '',
-                dateTBC: true, // Automatically checked
                 timeStart: '',
-                timeEnd: '',
                 place: '',
                 address: '',
+                addressLocked: false,
                 lockers: '',
                 remarks: '',
                 image: null,
-                serviceType: 'Removal' // Default to Removal
+                serviceType: 'Installation' // Always Installation
             };
             
             installations.push(newInstallation);
@@ -1090,10 +1320,16 @@
                 const confirmDeploy = confirm(`Mark "${installation.place}" as deployed?\n\nThis will move it to the Deployed section and cannot be undone.`);
                 
                 if (confirmDeploy) {
-                    // Add to deployed list
+                    // Add to deployed list with ALL data preserved
                     deployed.push({
                         id: installation.id,
                         place: installation.place,
+                        address: installation.address || '',
+                        lockers: installation.lockers || '',
+                        date: installation.date || '',
+                        timeStart: installation.timeStart || '',
+                        remarks: installation.remarks || '',
+                        serviceType: installation.serviceType || 'Installation',
                         completedAt: new Date().toISOString()
                     });
                     
@@ -1114,13 +1350,196 @@
         window.updateInstallation = function(id, field, value) {
             const installation = installations.find(inst => inst.id === id);
             if (installation) {
+                // Check if card was incomplete before this update
+                const wasComplete = isJobComplete(installation);
+                
                 installation[field] = value;
+                
+                // Check if card is now complete after this update
+                const isNowComplete = isJobComplete(installation);
+                
+                // If card just became complete, add to animating set BEFORE saving
+                // This prevents Firebase listener from re-rendering during animation
+                if (!wasComplete && isNowComplete) {
+                    autoCollapsingCards.add(id);
+                    console.log('🔒 Locked card for animation:', id);
+                }
+                
                 saveToStorage();
                 updatePreview();
                 
                 // Auto-populate address when place name is entered
                 if (field === 'place' && value.trim()) {
                     searchAddressFromOneMap(value.trim(), id);
+                }
+                
+                // Don't re-render if any card is currently animating
+                if (autoCollapsingCards.size > 0 && !(!wasComplete && isNowComplete)) {
+                    console.log('Skipping render - animation in progress');
+                    return;
+                }
+                
+                // If card just became complete, trigger smooth collapse animation
+                if (!wasComplete && isNowComplete) {
+                    triggerAutoCollapse(id);
+                } else {
+                    renderInstallations();
+                }
+            }
+        };
+        
+        // Trigger smooth auto-collapse animation when card becomes complete
+        window.triggerAutoCollapse = function(id) {
+            console.log('🎬 Starting collapse animation for card:', id);
+            
+            setTimeout(() => {
+                const card = document.querySelector(`[data-card-id="${id}"]`);
+                
+                if (card && document.body.contains(card)) {
+                    const originalHeight = card.offsetHeight;
+                    const cardRect = card.getBoundingClientRect();
+                    
+                    // Set up card for animation
+                    card.style.overflow = 'hidden';
+                    card.style.height = originalHeight + 'px';
+                    card.style.transformOrigin = 'center center';
+                    card.style.position = 'relative';
+                    
+                    // Phase 1: Squish horizontally (quirky squeeze)
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        card.style.transform = 'scaleX(0.85) scaleY(1.1)';
+                        card.style.borderRadius = '20px';
+                    }, 50);
+                    
+                    // Phase 2: Squish into small rectangle
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        card.style.transform = 'scale(0.5)';
+                        card.style.height = '60px';
+                        card.style.borderRadius = '16px';
+                        card.style.opacity = '0.9';
+                    }, 350);
+                    
+                    // Phase 3: Explode into cubes!
+                    setTimeout(() => {
+                        // Hide the card content
+                        card.style.opacity = '0';
+                        card.style.transition = 'opacity 0.1s';
+                        
+                        // Create cube container
+                        const cubeContainer = document.createElement('div');
+                        cubeContainer.style.cssText = `
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            width: 100px;
+                            height: 60px;
+                            pointer-events: none;
+                            z-index: 1000;
+                        `;
+                        card.appendChild(cubeContainer);
+                        
+                        // Create cubes
+                        const colors = ['#3b82f6', '#60a5fa', '#93c5fd', '#2563eb', '#1d4ed8'];
+                        const numCubes = 12;
+                        
+                        for (let i = 0; i < numCubes; i++) {
+                            const cube = document.createElement('div');
+                            const size = 8 + Math.random() * 8;
+                            const startX = Math.random() * 80 - 40;
+                            const startY = Math.random() * 40 - 20;
+                            
+                            cube.style.cssText = `
+                                position: absolute;
+                                width: ${size}px;
+                                height: ${size}px;
+                                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                                border-radius: 3px;
+                                left: 50%;
+                                top: 50%;
+                                transform: translate(${startX}px, ${startY}px);
+                                opacity: 1;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                            `;
+                            cubeContainer.appendChild(cube);
+                            
+                            // Animate each cube flying outward
+                            const angle = (i / numCubes) * Math.PI * 2;
+                            const distance = 60 + Math.random() * 80;
+                            const endX = Math.cos(angle) * distance;
+                            const endY = Math.sin(angle) * distance;
+                            const rotation = Math.random() * 360;
+                            
+                            setTimeout(() => {
+                                cube.style.transition = 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                                cube.style.transform = `translate(${endX}px, ${endY}px) rotate(${rotation}deg) scale(0.3)`;
+                                cube.style.opacity = '0';
+                            }, 50 + i * 30);
+                        }
+                        
+                        // Clean up cubes
+                        setTimeout(() => {
+                            cubeContainer.remove();
+                        }, 800);
+                        
+                    }, 750);
+                    
+                    // Phase 4: Final render
+                    setTimeout(() => {
+                        autoCollapsingCards.delete(id);
+                        renderInstallations();
+                    }, 1400);
+                    
+                } else {
+                    autoCollapsingCards.delete(id);
+                    renderInstallations();
+                }
+            }, 50);
+        };
+
+        window.unlockAddress = function(id) {
+            const installation = installations.find(inst => inst.id === id);
+            if (installation) {
+                installation.addressLocked = false;
+                saveToStorage();
+                renderInstallations();
+            }
+        };
+
+        window.lockAddress = function(id) {
+            const installation = installations.find(inst => inst.id === id);
+            if (installation) {
+                installation.addressLocked = true;
+                saveToStorage();
+                renderInstallations();
+            }
+        };
+
+        // Handle Enter key to complete input and move to next field
+        window.handleEnterKey = function(event, id, field) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const currentInput = event.target;
+                
+                // Trigger the change/blur to save the value
+                currentInput.blur();
+                
+                // Find all inputs in this card and move to next one
+                const card = currentInput.closest('.installation-item');
+                if (card) {
+                    const inputs = card.querySelectorAll('input:not([type="checkbox"]):not([type="file"]), textarea, select');
+                    const inputsArray = Array.from(inputs);
+                    const currentIndex = inputsArray.indexOf(currentInput);
+                    
+                    if (currentIndex < inputsArray.length - 1) {
+                        // Move to next input
+                        const nextInput = inputsArray[currentIndex + 1];
+                        if (nextInput && !nextInput.disabled) {
+                            nextInput.focus();
+                        }
+                    }
                 }
             }
         };
@@ -1229,13 +1648,16 @@
                         
                         if (fullAddress && fullAddress.trim()) {
                             installation.address = fullAddress.trim();
+                            installation.addressLocked = true; // Lock the address when auto-populated
                             console.log('OneMap: ✅ Updated address to:', fullAddress);
                         } else {
                             installation.address = '';
+                            installation.addressLocked = false;
                             console.log('OneMap: No valid address found in result');
                         }
                     } else {
                         installation.address = '';
+                        installation.addressLocked = false;
                         console.log('OneMap: No results found for:', placeName);
                     }
                 } else {
@@ -1250,10 +1672,21 @@
                 // Mark search as complete
                 ongoingSearches.delete(installationId);
                 
+                // Check if card just became complete after address update
+                const wasComplete = !installation.address; // Was incomplete before
+                const isNowComplete = isJobComplete(installation);
+                
                 // NOW update the UI with the final result
                 saveToStorage();
-                renderInstallations();
                 updatePreview();
+                
+                // If card just became complete, trigger animation
+                if (isNowComplete && !autoCollapsingCards.has(installationId)) {
+                    triggerAutoCollapse(installationId);
+                } else if (!autoCollapsingCards.has(installationId)) {
+                    // Only re-render if not animating
+                    renderInstallations();
+                }
             }
         }
 
@@ -1275,60 +1708,34 @@
             }
         };
 
-        // Helper function to get CSS class for installation card border
-        window.getServiceTypeBorderClass = function(serviceType) {
-            switch(serviceType) {
-                case 'Installation':
-                    return 'border-installation';
-                case 'Cleaning':
-                    return 'border-cleaning';
-                case 'Removal':
-                    return 'border-removal';
-                case 'Relocation':
-                    return 'border-relocation';
-                case 'Ad-Hoc [Repair & Fixes]':
-                    return 'border-adhoc';
-                default:
-                    return 'border-installation';
-            }
+        // Helper function to check if a job has all required fields filled
+        window.isJobComplete = function(inst) {
+            return !!(
+                inst.place && inst.place.trim() &&
+                inst.address && inst.address.trim() &&
+                inst.lockers && inst.lockers.trim() &&
+                inst.date && inst.date.trim() &&
+                inst.timeStart && inst.timeStart.trim()
+            );
         };
 
         // Automatic sorting function
         function sortInstallations(instArray) {
-            // Service type priority order (only applies when Date/Time Required is unchecked)
-            const serviceTypePriority = {
-                'Cleaning': 1,
-                'Ad-Hoc [Repair & Fixes]': 2,
-                'Installation': 3,
-                'Relocation': 4,
-                'Removal': 5
-            };
-
             return [...instArray].sort((a, b) => {
-                // First priority: Date/Time Required (dateTBC = true) comes first
-                if (a.dateTBC && !b.dateTBC) return -1;
-                if (!a.dateTBC && b.dateTBC) return 1;
+                const aComplete = isJobComplete(a);
+                const bComplete = isJobComplete(b);
+                
+                // First priority: Incomplete jobs come first
+                if (!aComplete && bComplete) return -1;
+                if (aComplete && !bComplete) return 1;
 
-                // If Date/Time Required is checked for both, sort by newest first only
-                if (a.dateTBC && b.dateTBC) {
+                // For incomplete jobs: newest first (so new cards appear at top)
+                if (!aComplete && !bComplete) {
                     return b.id - a.id;
                 }
 
-                // If Date/Time Required is unchecked for both, apply service type sorting first
-                if (!a.dateTBC && !b.dateTBC) {
-                    // Second priority (for unchecked only): Service type order
-                    const aPriority = serviceTypePriority[a.serviceType] || 999;
-                    const bPriority = serviceTypePriority[b.serviceType] || 999;
-                    
-                    if (aPriority !== bPriority) {
-                        return aPriority - bPriority;
-                    }
-
-                    // Third priority (for unchecked only): Newer installations first
-                    return b.id - a.id;
-                }
-
-                return 0;
+                // For complete jobs: keep creation order (oldest first)
+                return a.id - b.id;
             });
         }
 
@@ -1371,6 +1778,38 @@
             }
         };
 
+        // Track expanded state for cards
+        let expandedCards = new Set();
+        
+        // Track previous completion state to detect when cards become complete
+        let previousCompleteState = new Map();
+
+        window.toggleCardExpansion = function(id) {
+            const card = document.querySelector(`[data-card-id="${id}"]`);
+            if (expandedCards.has(id)) {
+                // Collapse with animation
+                if (card) {
+                    card.classList.add('collapsing');
+                    setTimeout(() => {
+                        expandedCards.delete(id);
+                        renderInstallations();
+                    }, 280);
+                } else {
+                    expandedCards.delete(id);
+                    renderInstallations();
+                }
+            } else {
+                // Expand with animation
+                expandedCards.add(id);
+                renderInstallations();
+                const newCard = document.querySelector(`[data-card-id="${id}"]`);
+                if (newCard) {
+                    newCard.classList.add('expanding');
+                    setTimeout(() => newCard.classList.remove('expanding'), 300);
+                }
+            }
+        };
+
         function renderInstallations() {
             const list = document.getElementById('installationsList');
             const emptyState = document.getElementById('emptyState');
@@ -1383,33 +1822,80 @@
             
             emptyState.style.display = 'none';
             
-            // Sort installations automatically
+            // Sort installations - incomplete first, then by creation order (no shifting)
             const sortedInstallations = sortInstallations(installations);
             
-            list.innerHTML = sortedInstallations.map((inst, index) => `
-                <div class="installation-item ${getServiceTypeBorderClass(inst.serviceType || 'Installation')} ${inst.dateTBC ? 'date-tbc' : ''}">
-                    <div class="action-buttons">
-                        <button class="remove-btn" onclick="removeInstallation(${inst.id})" title="Delete">×</button>
-                    </div>
+            list.innerHTML = sortedInstallations.map((inst, index) => {
+                const complete = isJobComplete(inst);
+                const isExpanded = expandedCards.has(inst.id);
+                const isAutoCollapsing = autoCollapsingCards.has(inst.id);
+                
+                // Show collapsed view for complete jobs (unless expanded or currently animating)
+                if (complete && !isExpanded && !isAutoCollapsing) {
+                    // Format date for collapsed view
+                    let dateStr = '';
+                    if (inst.date) {
+                        const date = new Date(inst.date + 'T00:00:00');
+                        const dayName = date.toLocaleDateString('en-GB', { weekday: 'short' });
+                        const day = date.getDate();
+                        const month = date.toLocaleDateString('en-GB', { month: 'short' });
+                        dateStr = `${dayName} ${day} ${month}`;
+                    }
+                    const timeStr = inst.timeStart ? inst.timeStart.replace(':', '') + 'H' : '';
                     
-                    <div class="form-group">
-                        <label>Place</label>
+                    return `
+                        <div class="installation-item border-installation collapsed" data-card-id="${inst.id}" onclick="toggleCardExpansion(${inst.id})">
+                            <div class="collapsed-content">
+                                <div class="collapsed-info">
+                                    <span style="color: #38a169; font-size: 18px;">✅</span>
+                                    <span class="collapsed-place">${inst.place || 'No place'}</span>
+                                    <div class="collapsed-details">
+                                        <span>📅 ${dateStr}</span>
+                                        <span>⏰ ${timeStr}</span>
+                                        <span class="collapsed-badge">${inst.lockers}</span>
+                                    </div>
+                                </div>
+                                <button class="expand-btn" onclick="event.stopPropagation(); toggleCardExpansion(${inst.id})">
+                                    ▼ Expand
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Show full card for incomplete jobs or expanded complete jobs
+                return `
+                <div class="installation-item ${complete ? 'border-installation' : 'border-removal date-tbc'}" data-card-id="${inst.id}">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <label style="margin-bottom: 0;">Place</label>
+                            <div style="display: flex; gap: 6px;">
+                                ${complete ? `<button class="collapse-btn" onclick="toggleCardExpansion(${inst.id})" title="Collapse">▲</button>` : ''}
+                                <button class="remove-btn" onclick="removeInstallation(${inst.id})" title="Delete">×</button>
+                            </div>
+                        </div>
                         <input 
                             type="text" 
                             placeholder="e.g., Parkview Apartments" 
                             value="${inst.place || ''}"
                             onblur="updateInstallation(${inst.id}, 'place', this.value)"
+                            onkeydown="handleEnterKey(event, ${inst.id}, 'place')"
                         >
                     </div>
                     
                     <div class="form-group">
                         <label>Address</label>
-                        <input 
-                            type="text" 
-                            placeholder="e.g., 1 Bukit Batok Street 25 Singapore 658882" 
-                            value="${inst.address || ''}"
-                            onchange="updateInstallation(${inst.id}, 'address', this.value)"
-                        >
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input 
+                                type="text" 
+                                placeholder="e.g., 1 Bukit Batok Street 25 Singapore 658882" 
+                                value="${inst.address || ''}"
+                                onchange="updateInstallation(${inst.id}, 'address', this.value)"
+                                onkeydown="handleEnterKey(event, ${inst.id}, 'address')"
+                                ${inst.addressLocked ? 'disabled style="flex: 1; background: #e2e8f0; cursor: not-allowed;"' : 'style="flex: 1;"'}
+                            >
+                            ${inst.address ? `<button onclick="${inst.addressLocked ? 'unlockAddress' : 'lockAddress'}(${inst.id})" style="background: ${inst.addressLocked ? '#718096' : '#38a169'}; color: white; border: none; border-radius: 8px; width: 42px; height: 42px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;" title="${inst.addressLocked ? 'Unlock to edit' : 'Lock address'}">${inst.addressLocked ? '🔒' : '🔓'}</button>` : ''}
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -1443,70 +1929,33 @@
                         <textarea 
                             placeholder="e.g., Power outlet is available" 
                             onchange="updateInstallation(${inst.id}, 'remarks', this.value)"
+                            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { handleEnterKey(event, ${inst.id}, 'remarks'); }"
                         >${inst.remarks || ''}</textarea>
                     </div>
                     
                     <div class="form-group">
-                        <label>Service Type</label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <select 
-                                class="service-type-select ${getServiceTypeClass(inst.serviceType || 'Installation')}"
-                                value="${inst.serviceType || 'Installation'}"
-                                onchange="updateInstallation(${inst.id}, 'serviceType', this.value); renderInstallations();"
-                            >
-                                <option value="Installation" ${inst.serviceType === 'Installation' ? 'selected' : ''}>Installation</option>
-                                <option value="Cleaning" ${inst.serviceType === 'Cleaning' ? 'selected' : ''}>Cleaning</option>
-                                <option value="Removal" ${inst.serviceType === 'Removal' ? 'selected' : ''}>Removal</option>
-                                <option value="Relocation" ${inst.serviceType === 'Relocation' ? 'selected' : ''}>Relocation</option>
-                                <option value="Ad-Hoc [Repair & Fixes]" ${inst.serviceType === 'Ad-Hoc [Repair & Fixes]' ? 'selected' : ''}>Ad-Hoc [Repair & Fixes]</option>
-                            </select>
-                            <label style="display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                        <label>Installation Date & Time</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="font-size: 12px; margin-bottom: 4px; display: block;">Date</label>
                                 <input 
-                                    type="checkbox" 
-                                    ${inst.warehouseMessage ? 'checked' : ''}
-                                    onchange="updateInstallation(${inst.id}, 'warehouseMessage', this.checked); updatePreview();"
-                                    style="cursor: pointer; width: 18px; height: 18px;"
+                                    type="date" 
+                                    value="${inst.date || ''}" 
+                                    onchange="updateInstallation(${inst.id}, 'date', this.value)"
+                                    onkeydown="handleEnterKey(event, ${inst.id}, 'date')"
+                                    style="width: 100%;"
                                 >
-                                <span style="font-size: 13px;">📦 Warehouse</span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Date & Time</label>
-                        <div class="date-time-row">
-                            <input 
-                                type="date" 
-                                value="${inst.date || ''}" 
-                                onchange="updateInstallation(${inst.id}, 'date', this.value)"
-                            >
-                        </div>
-                        <div class="time-range-container">
-                            <div class="time-input-group">
-                                <label>Start Time</label>
+                            </div>
+                            <div>
+                                <label style="font-size: 12px; margin-bottom: 4px; display: block;">Start Time</label>
                                 <input 
                                     type="time" 
                                     value="${inst.timeStart || ''}" 
                                     onchange="updateInstallation(${inst.id}, 'timeStart', this.value)"
+                                    onkeydown="handleEnterKey(event, ${inst.id}, 'timeStart')"
+                                    style="width: 100%;"
                                 >
                             </div>
-                            <div class="time-input-group">
-                                <label>End Time</label>
-                                <input 
-                                    type="time" 
-                                    value="${inst.timeEnd || ''}" 
-                                    onchange="updateInstallation(${inst.id}, 'timeEnd', this.value)"
-                                >
-                            </div>
-                        </div>
-                        <div class="date-tbc-checkbox">
-                            <input 
-                                type="checkbox" 
-                                id="tbc-${inst.id}"
-                                ${inst.dateTBC ? 'checked' : ''}
-                                onchange="updateInstallation(${inst.id}, 'dateTBC', this.checked); renderInstallations();"
-                            >
-                            <label for="tbc-${inst.id}">Date/Time Required</label>
                         </div>
                     </div>
                     
@@ -1532,72 +1981,117 @@
                         ✅ Completed
                     </button>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
+        // Toggle alert job selection
+        window.toggleAlertJob = function(id) {
+            if (alertSelectedJobs.has(id)) {
+                alertSelectedJobs.delete(id);
+            } else {
+                alertSelectedJobs.add(id);
+            }
+            updatePreview();
+        };
+        
+        // Select/Deselect all alert jobs
+        window.toggleAllAlertJobs = function(selectAll) {
+            const incompleteJobs = installations.filter(inst => !inst.date || !inst.timeStart);
+            if (selectAll) {
+                incompleteJobs.forEach(inst => alertSelectedJobs.add(inst.id));
+            } else {
+                alertSelectedJobs.clear();
+            }
+            updatePreview();
+        };
+
         function updatePreview() {
+            const jobSelectionContainer = document.getElementById('alertJobSelection');
             const previewBox = document.getElementById('previewBox');
             const whatsappBtn = document.getElementById('whatsappBtn');
             
-            if (installations.length === 0) {
-                previewBox.textContent = '';
+            // Filter jobs that are missing date OR time (incomplete schedule)
+            const incompleteJobs = installations.filter(inst => !inst.date || !inst.timeStart);
+            
+            // Sort by place name for consistency
+            const sortedJobs = [...incompleteJobs].sort((a, b) => {
+                const placeA = a.place || '';
+                const placeB = b.place || '';
+                return placeA.localeCompare(placeB);
+            });
+            
+            // Render job selection list
+            if (sortedJobs.length === 0) {
+                jobSelectionContainer.innerHTML = '<div style="padding: 15px; text-align: center; color: #166534;">✅ All jobs have been scheduled!</div>';
+                previewBox.textContent = 'No pending installations require attention.';
                 whatsappBtn.disabled = true;
+                window.currentMessage = '';
+                updateWarehousePreview();
+                return;
+            }
+            
+            // Build selection list HTML
+            let selectionHtml = `
+                <div style="padding: 10px; border-bottom: 1px solid #fca5a5; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600; color: #991b1b;">Select jobs for alert:</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="toggleAllAlertJobs(true)" style="background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">Select All</button>
+                        <button onclick="toggleAllAlertJobs(false)" style="background: #6b7280; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">Clear</button>
+                    </div>
+                </div>
+            `;
+            
+            sortedJobs.forEach(inst => {
+                const isSelected = alertSelectedJobs.has(inst.id);
+                const placeName = inst.place || '[No place set]';
+                const lockers = inst.lockers || 'No config';
+                const missingItems = [];
+                if (!inst.date) missingItems.push('Date');
+                if (!inst.timeStart) missingItems.push('Time');
+                const missingText = missingItems.join(', ');
+                
+                selectionHtml += `
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px; cursor: pointer; border-bottom: 1px solid #fecaca; ${isSelected ? 'background: #fee2e2;' : ''} transition: background 0.15s ease;" onclick="toggleAlertJob(${inst.id})" onmouseover="this.style.background='${isSelected ? '#fecaca' : '#fef2f2'}'" onmouseout="this.style.background='${isSelected ? '#fee2e2' : ''}'">
+                        <input type="checkbox" ${isSelected ? 'checked' : ''} style="width: 18px; height: 18px; pointer-events: none;">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${placeName}</div>
+                            <div style="font-size: 12px; color: #6b7280;">${lockers} • Missing: ${missingText}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            jobSelectionContainer.innerHTML = selectionHtml;
+            
+            // Get selected jobs for message
+            const selectedJobs = sortedJobs.filter(inst => alertSelectedJobs.has(inst.id));
+            
+            if (selectedJobs.length === 0) {
+                previewBox.textContent = 'Select jobs above to generate scheduling alert.';
+                whatsappBtn.disabled = true;
+                window.currentMessage = '';
+                updateWarehousePreview();
                 return;
             }
             
             whatsappBtn.disabled = false;
             
-            // Always use TODAY's date (updates every time you open/refresh)
-            const today = new Date();
-            const day = today.getDate();
-            const month = today.toLocaleDateString('en-GB', { month: 'short' });
-            const year = today.getFullYear();
-            const dateStr = `${day} ${month} ${year}`;
+            const jobWord = selectedJobs.length === 1 ? 'installation' : 'installations';
             
-            let message = `🛠️Upcoming Jobs (as of ${dateStr})🛠️\n\n`;
+            let message = `🚨 ACTION REQUIRED 🚨\n\n`;
+            message += `${selectedJobs.length} ${jobWord} pending schedule:\n\n`;
             
-                // Sort installations for WhatsApp message
-                const sortedInstallations = sortInstallations(installations);
+            selectedJobs.forEach(inst => {
+                const placeName = inst.place || '[No place set]';
+                const lockers = inst.lockers ? `(${inst.lockers})` : '';
+                const address = inst.address || '[No address set]';
                 
-                sortedInstallations.forEach(inst => {
-                let dateDisplay;
-                if (inst.dateTBC && inst.date) {
-                    // Date/Time Required is checked BUT date is entered - show red X
-                    const date = new Date(inst.date + 'T00:00:00');
-                    const dayName = date.toLocaleDateString('en-GB', { weekday: 'short' });
-                    const day = date.getDate();
-                    const month = date.toLocaleDateString('en-GB', { month: 'short' });
-                    dateDisplay = `${dayName} ${day} ${month} ❌`;
-                } else if (inst.dateTBC || !inst.date) {
-                    // Date/Time Required is checked OR no date entered - show TBC
-                    dateDisplay = 'TBC ⏰';
-                } else {
-                    // Normal case - date entered and Date/Time Required unchecked
-                    const date = new Date(inst.date + 'T00:00:00');
-                    const dayName = date.toLocaleDateString('en-GB', { weekday: 'short' });
-                    const day = date.getDate();
-                    const month = date.toLocaleDateString('en-GB', { month: 'short' });
-                    
-                    // Format time in 24-hour format (HHMM)
-                    let timeRange = '';
-                    if (inst.timeStart && inst.timeEnd) {
-                        const startTime = inst.timeStart.replace(':', '') + 'H';
-                        const endTime = inst.timeEnd.replace(':', '') + 'H';
-                        timeRange = ` ${startTime} - ${endTime}`;
-                    }
-                    
-                    dateDisplay = `${dayName} ${day} ${month}${timeRange} ✅`;
-                }
-                
-                message += `Service Type: ${inst.serviceType || 'Installation'}\n`;
-                message += `Date: ${dateDisplay}\n`;
-                message += `Place: ${inst.place || '[Not set]'}\n`;
-                message += `Address: ${inst.address || '[Not set]'}\n`;
-                message += `No. of Lockers: ${inst.lockers || '[Not set]'}\n`;
-                message += `Remarks: ${inst.remarks || '[Not set]'}\n\n`;
+                message += `❌ ${placeName} ${lockers}\n`;
+                message += `   ${address}\n\n`;
             });
             
-            message += '-end-';
+            message += `Please arrange scheduling.`;
             
             previewBox.textContent = message;
             window.currentMessage = message;
@@ -1606,38 +2100,99 @@
             updateWarehousePreview();
         }
 
+        // Toggle warehouse job selection
+        window.toggleWarehouseJob = function(id) {
+            if (warehouseSelectedJobs.has(id)) {
+                warehouseSelectedJobs.delete(id);
+            } else {
+                warehouseSelectedJobs.add(id);
+            }
+            updateWarehousePreview();
+        };
+        
+        // Select/Deselect all warehouse jobs
+        window.toggleAllWarehouseJobs = function(selectAll) {
+            const completeJobs = installations.filter(inst => isJobComplete(inst));
+            if (selectAll) {
+                completeJobs.forEach(inst => warehouseSelectedJobs.add(inst.id));
+            } else {
+                warehouseSelectedJobs.clear();
+            }
+            updateWarehousePreview();
+        };
+
         function updateWarehousePreview() {
-            const warehousePreviewBox = document.getElementById('warehousePreviewBox');
+            const jobSelectionContainer = document.getElementById('warehouseJobSelection');
             const warehouseBtn = document.getElementById('warehouseWhatsappBtn');
             
-            // Filter installations with warehouseMessage checked
-            const warehouseInstallations = installations.filter(inst => inst.warehouseMessage);
+            // Get all complete jobs
+            const completeJobs = installations.filter(inst => isJobComplete(inst));
             
-            if (warehouseInstallations.length === 0) {
-                warehousePreviewBox.textContent = 'No warehouse collections marked.\n\nCheck the 📦 Warehouse checkbox on installations that need warehouse pickup.';
+            // Sort by date then time
+            const sortedJobs = [...completeJobs].sort((a, b) => {
+                if (a.date && b.date) {
+                    const dateCompare = new Date(a.date) - new Date(b.date);
+                    if (dateCompare !== 0) return dateCompare;
+                }
+                if (!a.date && b.date) return 1;
+                if (a.date && !b.date) return -1;
+                
+                const timeA = a.timeStart || '99:99';
+                const timeB = b.timeStart || '99:99';
+                return timeA.localeCompare(timeB);
+            });
+            
+            // Render job selection list
+            if (sortedJobs.length === 0) {
+                jobSelectionContainer.innerHTML = '<div style="padding: 15px; text-align: center; color: #92400e;">No complete jobs available</div>';
                 warehouseBtn.disabled = true;
+                return;
+            }
+            
+            // Build selection list HTML
+            let selectionHtml = `
+                <div style="padding: 10px; border-bottom: 1px solid #fbbf24; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 600; color: #92400e;">Select jobs for warehouse:</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="toggleAllWarehouseJobs(true)" style="background: #f59e0b; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">Select All</button>
+                        <button onclick="toggleAllWarehouseJobs(false)" style="background: #6b7280; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">Clear</button>
+                    </div>
+                </div>
+            `;
+            
+            sortedJobs.forEach(inst => {
+                const isSelected = warehouseSelectedJobs.has(inst.id);
+                const dateStr = inst.date ? new Date(inst.date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : 'No date';
+                const timeStr = inst.timeStart ? inst.timeStart.replace(':', '') + 'H' : '';
+                
+                selectionHtml += `
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px; cursor: pointer; border-bottom: 1px solid #fef3c7; ${isSelected ? 'background: #fef9c3;' : ''} transition: background 0.15s ease;" onclick="toggleWarehouseJob(${inst.id})" onmouseover="this.style.background='${isSelected ? '#fde047' : '#fffbeb'}'" onmouseout="this.style.background='${isSelected ? '#fef9c3' : ''}'">
+                        <input type="checkbox" ${isSelected ? 'checked' : ''} style="width: 18px; height: 18px; pointer-events: none;">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${inst.place || 'No place'}</div>
+                            <div style="font-size: 12px; color: #6b7280;">${dateStr} ${timeStr} • ${inst.lockers || 'No config'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            jobSelectionContainer.innerHTML = selectionHtml;
+            
+            // Get selected jobs for message
+            const selectedJobs = sortedJobs.filter(inst => warehouseSelectedJobs.has(inst.id));
+            
+            if (selectedJobs.length === 0) {
+                warehouseBtn.disabled = true;
+                window.currentWarehouseMessage = '';
                 return;
             }
             
             warehouseBtn.disabled = false;
             
-            // Sort by date (earliest first)
-            const sortedWarehouseInstallations = [...warehouseInstallations].sort((a, b) => {
-                // If both have dates, compare them
-                if (a.date && b.date) {
-                    return new Date(a.date) - new Date(b.date);
-                }
-                // Items without dates go to the end
-                if (!a.date && b.date) return 1;
-                if (a.date && !b.date) return -1;
-                // If both have no date, maintain original order
-                return 0;
-            });
-            
             let warehouseMessage = 'Hello @~Seamas @~Dom , upcoming locker collection is as such:\n\n';
             
-            // Group by date
-            sortedWarehouseInstallations.forEach(inst => {
+            // Build message for selected jobs
+            selectedJobs.forEach(inst => {
                 let dateDisplay = 'Date TBC';
                 
                 if (inst.date) {
@@ -1678,25 +2233,10 @@
                 
                 warehouseMessage += `locker pickup: ${lockerPickup}\n`;
                 
-                // Format time - 1 hour before the start time to the start time
+                // Format time
                 if (inst.timeStart) {
-                    // Parse the start time
-                    const [hours, minutes] = inst.timeStart.split(':').map(Number);
-                    
-                    // Calculate 1 hour before (warehouse pickup window)
-                    let warehouseStartHour = hours - 1;
-                    let warehouseStartMinute = minutes;
-                    
-                    // Handle edge case if hour goes negative
-                    if (warehouseStartHour < 0) {
-                        warehouseStartHour = 23;
-                    }
-                    
-                    // Format as HHMM (4 digits)
-                    const warehouseStart = String(warehouseStartHour).padStart(2, '0') + String(warehouseStartMinute).padStart(2, '0');
-                    const warehouseEnd = String(hours).padStart(2, '0') + String(minutes).padStart(2, '0');
-                    
-                    warehouseMessage += `${warehouseStart}-${warehouseEnd}\n`;
+                    const timeFormatted = inst.timeStart.replace(':', '') + 'H';
+                    warehouseMessage += `Time: ${timeFormatted}\n`;
                 }
                 
                 warehouseMessage += '\n';
@@ -1704,7 +2244,6 @@
             
             warehouseMessage += 'Thank you!🙏🏼';
             
-            warehousePreviewBox.textContent = warehouseMessage;
             window.currentWarehouseMessage = warehouseMessage;
         }
 
@@ -1740,23 +2279,40 @@
             const list = document.getElementById('deployedList');
             const emptyState = document.getElementById('deployedEmptyState');
             const clearAllBtn = document.getElementById('clearAllBtn');
+            const exportExcelBtn = document.getElementById('exportExcelBtn');
             
             if (deployed.length === 0) {
                 list.innerHTML = '';
                 emptyState.style.display = 'block';
                 clearAllBtn.style.display = 'none';
+                exportExcelBtn.style.display = 'none';
                 return;
             }
             
             emptyState.style.display = 'none';
             clearAllBtn.style.display = 'flex';
+            exportExcelBtn.style.display = 'block';
             
-            list.innerHTML = deployed.map(item => `
-                <div class="deployed-item">
-                    <span style="font-size: 20px;">✅</span>
-                    <span class="deployed-item-text">${item.place}</span>
-                </div>
-            `).join('');
+            list.innerHTML = deployed.map(item => {
+                // Format date for display
+                const dateStr = item.date ? new Date(item.date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
+                const timeStr = item.timeStart ? item.timeStart : '';
+                const dateTimeStr = dateStr && timeStr ? `${dateStr} ${timeStr}` : (dateStr || timeStr || '');
+                
+                return `
+                    <div class="deployed-item" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                        <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                            <span style="font-size: 20px;">✅</span>
+                            <span class="deployed-item-text" style="flex: 1;">${item.place}</span>
+                        </div>
+                        ${dateTimeStr || item.lockers ? `
+                            <div style="font-size: 12px; color: #6b7280; padding-left: 32px;">
+                                ${dateTimeStr ? `📅 ${dateTimeStr}` : ''} ${item.lockers ? `• ${item.lockers}` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         window.clearAllDeployed = function() {
@@ -1779,6 +2335,93 @@
             } else {
                 alert('Incorrect passcode. Access denied.');
             }
+        };
+
+        // Export completed jobs to Excel (CSV format)
+        window.exportToExcel = function() {
+            if (deployed.length === 0) {
+                alert('No completed jobs to export.');
+                return;
+            }
+            
+            // Define CSV headers
+            const headers = [
+                'Place Name',
+                'Address',
+                'Locker Configuration',
+                'Service Type',
+                'Installation Date',
+                'Start Time',
+                'Remarks'
+            ];
+            
+            // Helper function to escape CSV values
+            const escapeCSV = (value) => {
+                if (value === null || value === undefined) return '';
+                const str = String(value);
+                // If value contains comma, newline, or quotes, wrap in quotes and escape existing quotes
+                if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+                    return '"' + str.replace(/"/g, '""') + '"';
+                }
+                return str;
+            };
+            
+            // Format date for display
+            const formatDate = (dateStr) => {
+                if (!dateStr) return '';
+                try {
+                    return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-GB', { 
+                        day: 'numeric', 
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                } catch {
+                    return dateStr;
+                }
+            };
+            
+            // Build CSV rows
+            const rows = deployed.map(item => [
+                escapeCSV(item.place || ''),
+                escapeCSV(item.address || ''),
+                escapeCSV(item.lockers || ''),
+                escapeCSV(item.serviceType || 'Installation'),
+                escapeCSV(formatDate(item.date)),
+                escapeCSV(item.timeStart || ''),
+                escapeCSV(item.remarks || '')
+            ].join(','));
+            
+            // Combine headers and rows
+            const csvContent = [headers.join(','), ...rows].join('\n');
+            
+            // Add BOM for Excel to recognize UTF-8
+            const BOM = '\uFEFF';
+            const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Create download link
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            // Generate filename with current date
+            const today = new Date();
+            const dateForFilename = today.toLocaleDateString('en-GB', { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric' 
+            }).replace(/ /g, '-');
+            const filename = `Completed_Installations_${dateForFilename}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Cleanup
+            URL.revokeObjectURL(url);
+            
+            alert(`✅ Exported ${deployed.length} completed installation(s) to Excel!\n\nFile: ${filename}`);
         };
 
         // PWA Installation Prompt
@@ -1860,3 +2503,4 @@
     </script>
 </body>
 </html>
+
